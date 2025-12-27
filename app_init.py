@@ -1,4 +1,3 @@
-
 """
 Sign Language Recognition System
 Complete working version with proper import order
@@ -8,14 +7,7 @@ Complete working version with proper import order
 # IMPORTS - MUST BE FIRST
 # ============================================================================
 import streamlit as st
-import cv2
-import numpy as np
-import mediapipe as mp
-import os
-from collections import deque, Counter
-import tempfile
-from typing import List, Tuple, Optional
-
+from config import Config  # ADD THIS LINE
 from model_handler import ModelHandler
 
 
