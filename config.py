@@ -1,15 +1,18 @@
 """
 Configuration settings for the sign language recognition app.
-Modify these settings to customize the application behavior.
 """
 
 class Config:
     # Model settings
-    MODEL_PATH = "sign_language_model.h5"
+    MODEL_PATH = "sign_language_model.h5"  # Local model file
     DATASET_DIR = "dataset"
 
+    # Google Drive settings
+    DATASET_GDRIVE_ID = "1BXdzzLqJmMmD__6BpKEVmdCXZ9c-BTmm"  # Your dataset folder ID
+    MODEL_GDRIVE_ID = None  # ← Set to None (model is local, not on Drive)
+
     # Sequence settings
-    SEQUENCE_LENGTH = 30  # Number of frames for temporal sequence
+    SEQUENCE_LENGTH = 30
 
     # MediaPipe settings
     MIN_DETECTION_CONFIDENCE = 0.7
@@ -17,7 +20,7 @@ class Config:
     MAX_NUM_HANDS = 2
 
     # Prediction settings
-    CONFIDENCE_THRESHOLD = 0.5  # Minimum confidence for valid prediction
+    CONFIDENCE_THRESHOLD = 0.5
 
     # Video settings
     FRAME_WIDTH = 1280
@@ -29,7 +32,7 @@ class Config:
     SHOW_CONNECTIONS = True
 
     # Keypoint structure
-    NUM_LANDMARKS = 21  # MediaPipe hand landmarks
-    COORDS_PER_LANDMARK = 3  # x, y, z
+    NUM_LANDMARKS = 21
+    COORDS_PER_LANDMARK = 3
     KEYPOINTS_PER_HAND = NUM_LANDMARKS * COORDS_PER_LANDMARK  # 63
     TOTAL_KEYPOINTS = KEYPOINTS_PER_HAND * MAX_NUM_HANDS  # 126
