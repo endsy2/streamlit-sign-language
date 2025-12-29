@@ -1,39 +1,35 @@
 """
-Sign Language Recognition System
-Complete working version with proper import order
+Configuration settings for the sign language recognition app.
+Modify these settings to customize the application behavior.
 """
 
-# ============================================================================
-# IMPORTS - MUST BE FIRST
-# ============================================================================
-import streamlit as st
-import cv2
-import numpy as np
-import mediapipe as mp
-import os
-from collections import deque, Counter
-import tempfile
-from typing import List, Tuple, Optional
-
-
-# ============================================================================
-# CONFIGURATION
-# ============================================================================
 class Config:
-    """Configuration settings for the application."""
+    # Model settings
     MODEL_PATH = "sign_language_model.h5"
     DATASET_DIR = "dataset"
-    SEQUENCE_LENGTH = 30
+
+    # Sequence settings
+    SEQUENCE_LENGTH = 30  # Number of frames for temporal sequence
+
+    # MediaPipe settings
     MIN_DETECTION_CONFIDENCE = 0.7
     MIN_TRACKING_CONFIDENCE = 0.7
     MAX_NUM_HANDS = 2
-    CONFIDENCE_THRESHOLD = 0.5
+
+    # Prediction settings
+    CONFIDENCE_THRESHOLD = 0.5  # Minimum confidence for valid prediction
+
+    # Video settings
     FRAME_WIDTH = 1280
     FRAME_HEIGHT = 720
     FPS = 30
+
+    # UI settings
     SHOW_KEYPOINTS = True
     SHOW_CONNECTIONS = True
-    NUM_LANDMARKS = 21
-    COORDS_PER_LANDMARK = 3
+
+    # Keypoint structure
+    NUM_LANDMARKS = 21  # MediaPipe hand landmarks
+    COORDS_PER_LANDMARK = 3  # x, y, z
     KEYPOINTS_PER_HAND = NUM_LANDMARKS * COORDS_PER_LANDMARK  # 63
     TOTAL_KEYPOINTS = KEYPOINTS_PER_HAND * MAX_NUM_HANDS  # 126
