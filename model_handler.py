@@ -57,6 +57,7 @@ class ModelHandler:
     def predict(self, sequence: List, sequence_length: int) -> Tuple[str, float, np.ndarray]:
         """Make prediction from keypoint sequence."""
         if len(sequence) < sequence_length:
+            # Return zeros matching class_labels length
             return "Collecting frames...", 0.0, np.zeros(len(self.class_labels))
 
         if self.model is None:
@@ -65,6 +66,17 @@ class ModelHandler:
         try:
             input_data = np.expand_dims(list(sequence), axis=0)
             predictions = self.model.predict(input_data, verbose=0)
+
+            # IMPORTANT: Check prediction shape
+            if predictions.shape[1] != len(self.class_labels):
+                st.error(f"Model outputs {predictions.shape[1]} classes but {len(self.class_labels)} labels loaded!")
+                # Pad or trim to match
+                if predictions.shape[1] > len(self.class_labels):
+                    predictions = predictions[:, :len(self.class_labels)]
+                else:
+                    padding = np.zeros((1, len(self.class_labels) - predictions.shape[1]))
+                    predictions = np.concatenate([predictions, padding], axis=1)
+
             predicted_class_idx = np.argmax(predictions[0])
             confidence = predictions[0][predicted_class_idx]
             predicted_label = self.class_labels[predicted_class_idx]

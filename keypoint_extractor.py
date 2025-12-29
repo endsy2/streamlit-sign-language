@@ -9,8 +9,8 @@ Complete working version with proper import order
 # ============================================================================
 import streamlit as st
 import cv2
-import numpy as np
 import mediapipe as mp
+import numpy as np
 from typing import List, Tuple
 # ============================================================================
 # KEYPOINT EXTRACTOR

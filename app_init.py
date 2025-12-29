@@ -7,7 +7,6 @@ Complete working version with proper import order
 # IMPORTS - MUST BE FIRST
 # ============================================================================
 import streamlit as st
-from config import Config  # ADD THIS LINE
 from model_handler import ModelHandler
 
 

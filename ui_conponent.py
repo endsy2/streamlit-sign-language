@@ -46,7 +46,23 @@ class UIComponents:
         if predictions.sum() == 0:
             return
 
+        # Safety check: ensure predictions match class_labels length
+        if len(predictions) != len(class_labels):
+            st.warning(
+                f"⚠️ Mismatch: Model outputs {len(predictions)} classes but only {len(class_labels)} labels loaded")
+            # Trim predictions to match class_labels
+            predictions = predictions[:len(class_labels)]
+
+        # Get top k predictions
+        top_k = min(top_k, len(class_labels))  # Don't ask for more than available
         top_k_idx = np.argsort(predictions)[-top_k:][::-1]
+
+        # Safety check: ensure indices are valid
+        top_k_idx = [i for i in top_k_idx if i < len(class_labels)]
+
+        if not top_k_idx:
+            return
+
         top_k_labels = [class_labels[i] for i in top_k_idx]
         top_k_values = [float(predictions[i]) for i in top_k_idx]
 

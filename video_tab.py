@@ -1,18 +1,17 @@
-
 """
-Sign Language Recognition System
-Complete working version with proper import order
+Video upload tab for batch processing.
+Handles video file upload and analysis.
 """
 
-# ============================================================================
-# IMPORTS - MUST BE FIRST
-# ============================================================================
 import streamlit as st
 import cv2
 import numpy as np
+import tempfile
 import os
 from collections import deque, Counter
-import tempfile
+from keypoint_extractor import KeypointExtractor 
+
+
 # ============================================================================
 # VIDEO TAB
 # ============================================================================
