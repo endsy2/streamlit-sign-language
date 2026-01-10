@@ -17,8 +17,8 @@ class ModelHandler:
     def load_model(self):
         """Load the trained Keras model."""
         try:
-            from tensorflow import keras
-            self.model = keras.models.load_model(self.model_path)
+            import tensorflow as tf
+            self.model = tf.keras.models.load_model(self.model_path)
             st.sidebar.success("✅ Model loaded!")
             return True
         except Exception as e:
@@ -39,12 +39,41 @@ class ModelHandler:
             return "Model not loaded", 0.0, np.zeros(len(self.class_labels))
 
         try:
-            input_data = np.expand_dims(list(sequence), axis=0)
+            input_data = np.array(list(sequence))
+            input_data = np.expand_dims(input_data, axis=0)
+            
+            # Debug: show input shape
+            # Expected shape: (1, sequence_length, 126)
+            print(f"Input shape: {input_data.shape}")
+            print(f"Model expected: {self.model.input_shape}")
+            
             predictions = self.model.predict(input_data, verbose=0)
-            predicted_idx = np.argmax(predictions[0])
-            confidence = predictions[0][predicted_idx]
-            label = self.class_labels[predicted_idx]
-            return label, float(confidence), predictions[0]
+            
+            # Handle different output shapes
+            if len(predictions.shape) > 1:
+                pred_array = predictions[0]
+            else:
+                pred_array = predictions
+            
+            # Check if predictions match class labels
+            if len(pred_array) != len(self.class_labels):
+                st.warning(f"⚠️ Model outputs {len(pred_array)} classes, but {len(self.class_labels)} labels defined")
+                # Use model output size
+                predicted_idx = np.argmax(pred_array)
+                confidence = float(pred_array[predicted_idx])
+                if predicted_idx < len(self.class_labels):
+                    label = self.class_labels[predicted_idx]
+                else:
+                    label = f"Class_{predicted_idx}"
+            else:
+                predicted_idx = np.argmax(pred_array)
+                confidence = float(pred_array[predicted_idx])
+                label = self.class_labels[predicted_idx]
+            
+            return label, confidence, pred_array
+            
         except Exception as e:
-            st.error(f"Prediction error: {e}")
+            st.error(f"❌ Prediction error: {str(e)}")
+            import traceback
+            st.code(traceback.format_exc())
             return "Error", 0.0, np.zeros(len(self.class_labels))

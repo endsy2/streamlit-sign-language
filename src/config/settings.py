@@ -7,14 +7,14 @@ class Config:
     """Configuration settings for the application."""
     
     # Model settings
-    MODEL_PATH = "models/sign_language_model.h5"
+    MODEL_PATH = "models/sign_language_model.keras"
     
     # Detection settings
-    SEQUENCE_LENGTH = 60
-    MIN_DETECTION_CONFIDENCE = 0.7
-    MIN_TRACKING_CONFIDENCE = 0.7
+    SEQUENCE_LENGTH = 120  # 30 frames per record
+    MIN_DETECTION_CONFIDENCE = 0.5
+    MIN_TRACKING_CONFIDENCE = 0.5
     MAX_NUM_HANDS = 2
-    CONFIDENCE_THRESHOLD = 0.5
+    CONFIDENCE_THRESHOLD = 0.3  # Lower threshold to show more results
     
     # Camera settings
     FRAME_WIDTH = 1280

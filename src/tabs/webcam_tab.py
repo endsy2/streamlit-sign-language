@@ -84,23 +84,17 @@ def run_webcam_tab(settings, model_handler):
         return
 
     if run_webcam:
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Use DirectShow for better Windows performance
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
         if not cap.isOpened():
             st.error("❌ Cannot access webcam")
             return
 
-        # High quality camera settings
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)   # Full HD width
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)  # Full HD height
+        # Optimized camera settings for smooth performance
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         cap.set(cv2.CAP_PROP_FPS, 30)
-        cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)        # Enable autofocus
-        cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)    # Auto exposure
-        cap.set(cv2.CAP_PROP_BRIGHTNESS, 128)     # Brightness (0-255)
-        cap.set(cv2.CAP_PROP_CONTRAST, 128)       # Contrast (0-255)
-        cap.set(cv2.CAP_PROP_SATURATION, 128)     # Saturation
-        cap.set(cv2.CAP_PROP_SHARPNESS, 128)      # Sharpness
-        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)       # Reduce buffer for less lag
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
         extractor = KeypointExtractor(
             min_detection_confidence=settings['min_detection_conf'],
@@ -115,15 +109,6 @@ def run_webcam_tab(settings, model_handler):
                 continue
 
             frame = cv2.flip(frame, 1)
-            
-            # Enhance image quality
-            # Denoise
-            frame = cv2.fastNlMeansDenoisingColored(frame, None, 5, 5, 7, 21)
-            # Sharpen
-            kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-            frame = cv2.filter2D(frame, -1, kernel)
-            # Adjust brightness/contrast
-            frame = cv2.convertScaleAbs(frame, alpha=1.15, beta=15)
             
             keypoints, annotated_frame, hands = extractor.extract(frame, settings['show_keypoints'])
             rgb_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)

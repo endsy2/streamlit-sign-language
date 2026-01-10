@@ -11,14 +11,17 @@ class UIComponents:
     """Reusable UI components."""
 
     @staticmethod
-    def display_prediction(label: str, confidence: float, threshold: float = 0.5):
-        """Display prediction with styling."""
+    def display_prediction(label: str, confidence: float, threshold: float = 0.3):
+        """Display prediction with styling - always show result."""
+        st.markdown(f"### 🎯 Result: **{label}**")
+        st.markdown(f"**Confidence: {confidence:.1%}**")
+        
         if confidence > threshold:
-            st.success(f"**Prediction:** {label}")
-        elif confidence > threshold * 0.6:
-            st.warning(f"**Prediction:** {label}")
+            st.success(f"✅ High confidence prediction")
+        elif confidence > 0.15:
+            st.warning(f"⚠️ Medium confidence - try again for better result")
         else:
-            st.info(f"**Prediction:** {label} (Low confidence)")
+            st.info(f"🔍 Low confidence - please try again")
 
     @staticmethod
     def display_confidence_metrics(confidence: float, hands_detected: List[str]):
@@ -32,17 +35,20 @@ class UIComponents:
 
     @staticmethod
     def display_top_predictions(predictions: np.ndarray, class_labels: List[str], top_k: int = 5):
-        """Display bar chart of top predictions."""
+        """Display top predictions with percentages."""
         if predictions.sum() == 0:
+            st.warning("No predictions available")
             return
 
+        top_k = min(top_k, len(class_labels))
         top_k_idx = np.argsort(predictions)[-top_k:][::-1]
-        top_k_labels = [class_labels[i] for i in top_k_idx]
-        top_k_values = [float(predictions[i]) for i in top_k_idx]
-
-        st.caption("Top Predictions")
-        chart_data = {label: val for label, val in zip(top_k_labels, top_k_values)}
-        st.bar_chart(chart_data)
+        
+        st.markdown("#### Top 5 Predictions:")
+        for i, idx in enumerate(top_k_idx):
+            label = class_labels[idx]
+            conf = predictions[idx]
+            bar = "🟩" * int(conf * 10) + "⬜" * (10 - int(conf * 10))
+            st.markdown(f"{i+1}. **{label}**: {conf:.1%} {bar}")
 
     @staticmethod
     def display_sequence_progress(current: int, total: int):
