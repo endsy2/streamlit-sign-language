@@ -48,6 +48,48 @@ def run_webcam_tab(settings, model_handler):
 
     # Show Re-predict button when prediction is done
     if st.session_state.prediction_done:
+        # Display the last captured frame
+        if st.session_state.last_frame is not None:
+            frame_placeholder.image(st.session_state.last_frame, channels="RGB", use_container_width=True)
+        
+        with progress_placeholder.container():
+            st.success("✅ Prediction complete! Click **Re-predict** to try again.")
+        
+        # Display prediction results
+        if st.session_state.last_prediction:
+            ui = UIComponents()
+            pred = st.session_state.last_prediction
+            
+            # Show main prediction result prominently
+            with prediction_placeholder.container():
+                st.markdown("---")
+                st.markdown(f"## 🎯 Prediction Result")
+                st.markdown(f"### **{pred['label']}**")
+                st.markdown(f"**Confidence: {pred['confidence']:.1%}**")
+                
+                if pred['confidence'] > settings['confidence_threshold']:
+                    st.success(f"✅ High confidence prediction")
+                elif pred['confidence'] > 0.15:
+                    st.warning(f"⚠️ Medium confidence - try again for better result")
+                else:
+                    st.info(f"🔍 Low confidence - please try again")
+            
+            with metrics_placeholder.container():
+                ui.display_confidence_metrics(
+                    pred['confidence'], 
+                    pred['hands'] if pred['hands'] else []
+                )
+            
+            with chart_placeholder.container():
+                ui.display_top_predictions(
+                    pred['predictions'], 
+                    model_handler.class_labels
+                )
+        else:
+            with prediction_placeholder.container():
+                st.error("❌ No prediction result available. Please try again.")
+        
+        # Re-predict button at the bottom
         with button_placeholder.container():
             if st.button("🔄 Re-predict", type="primary", use_container_width=True):
                 st.session_state.sequence.clear()
@@ -57,30 +99,6 @@ def run_webcam_tab(settings, model_handler):
                 st.session_state.frames_with_hands = 0
                 st.rerun()
         
-        if st.session_state.last_frame is not None:
-            frame_placeholder.image(st.session_state.last_frame, channels="RGB", use_container_width=True)
-        
-        with progress_placeholder.container():
-            st.success("✅ Prediction complete! Click **Re-predict** to try again.")
-        
-        if st.session_state.last_prediction:
-            ui = UIComponents()
-            with prediction_placeholder.container():
-                ui.display_prediction(
-                    st.session_state.last_prediction['label'], 
-                    st.session_state.last_prediction['confidence'], 
-                    settings['confidence_threshold']
-                )
-            with metrics_placeholder.container():
-                ui.display_confidence_metrics(
-                    st.session_state.last_prediction['confidence'], 
-                    st.session_state.last_prediction['hands']
-                )
-            with chart_placeholder.container():
-                ui.display_top_predictions(
-                    st.session_state.last_prediction['predictions'], 
-                    model_handler.class_labels
-                )
         return
 
     if run_webcam:
