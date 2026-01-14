@@ -10,11 +10,11 @@ class Config:
     MODEL_PATH = "models/sign_language_model.keras"
     
     # Detection settings
-    SEQUENCE_LENGTH = 120  # 30 frames per record
-    MIN_DETECTION_CONFIDENCE = 0.5
-    MIN_TRACKING_CONFIDENCE = 0.5
+    SEQUENCE_LENGTH = 30  # Must match training - 30 frames per prediction
+    MIN_DETECTION_CONFIDENCE = 0.7
+    MIN_TRACKING_CONFIDENCE = 0.7
     MAX_NUM_HANDS = 2
-    CONFIDENCE_THRESHOLD = 0.3  # Lower threshold to show more results
+    CONFIDENCE_THRESHOLD = 0.3
     
     # Camera settings
     FRAME_WIDTH = 1280
@@ -32,15 +32,16 @@ class Config:
     TOTAL_KEYPOINTS = KEYPOINTS_PER_HAND * MAX_NUM_HANDS  # 126
     
     # ============================================================================
-    # MANUAL CATEGORIES - Define your sign language categories here
+    # CLASS LABELS - Must match training order exactly!
     # ============================================================================
     CLASS_LABELS = [
-        'again', 'Baby', 'Bad', 'bathroom', 'book', 'Brother', 'busy', 'Dad', 
-        'do not want', 'Eat', 'father', 'Fine', 'finish', 'forget', 'Go', 'Good', 
-        'Great', 'happy', 'He', 'hello', 'Help', 'how', 'I', 'is', 'learn', 'like', 
-        'Love', 'marry', 'meet', 'milk', 'more', 'mother', 'My', 'name', 'need', 
-        'nice', 'No', 'Nothing', 'please', 'question', 'right', 'sad', 'same', 
-        'Say', 'see you letter', 'Sister', 'sleep', 'Stop', 'thank you', 'want', 
-        'We', 'what', 'What_s up', 'when', 'where', 'which', 'who', 'why', 
-        'wrong', 'Yes', 'You', 'your'
+        "Baby", "Bad", "Brother", "Dad", "Eat", "Fine", "Friend", "Go", "Good", 
+        "Great", "He", "Help", "I", "Love", "My", "No", "Nothing", "Say", 
+        "See you later", "Sister", "Stop", "Teacher", "We", "What_s up", "Yes", 
+        "You", "again", "bathroom", "book", "busy", "do not want", "father", 
+        "finish", "forget", "happy", "hello", "how", "is", "learn", "like", 
+        "marry", "meet", "milk", "more", "mother", "name", "need", "nice", 
+        "please", "question", "right", "sad", "same", "see you letter", "sleep", 
+        "thank you", "want", "what", "when", "where", "which", "who", "why", 
+        "wrong", "your"
     ]
